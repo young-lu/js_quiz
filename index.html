@@ -1,0 +1,217 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+    "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+    <title>JS Quiz</title>
+    <style type="text/css">
+
+    .choies {
+        display: block;
+        color: blue;
+    }
+
+    .question {
+        color: blue;
+        font-size: 25px;
+        font-style: Impact;
+    }
+
+    .title {
+        color: red;
+        font-size: 50px;
+        font-style: Impact;
+    }
+
+    .answered {
+        color: black;
+    }
+
+    .blue {
+        color: blue;
+    }
+
+    .gone {
+        /*display: none;*/
+        /*background-color: yellow;*/
+    }
+
+    .here { 
+        display: inline;
+        color: green;
+    }        
+    </style>
+
+    <script type="text/javascript" src="jquery-3.2.1.js"></script>
+
+    <script type="text/javascript">
+    var word= "this is a word";
+
+    var allQuestions = [
+    {question: ["Who is Prime Minister of the United Kingdom?"], choices: ["David Cameron", "Gordon Brown", "Winston Churchill", "Tony Blair"], correctAnswer:0}, 
+    {question: ["Who has sold out Madison Square Garden more than any other artist?"], choices: ["Journey", "Michael Jackson", "Billy Joel", "The Beatles"],correctAnswer:2},
+    {question: ["How many (Championship)ringsdoes Michael Jordan have?"], choices: ["Four", "Seven", "Two", "Six"], correctAnswer:3}, 
+    {question: ["Who is the current President of the United States of America?"], choices: ["Donald Trump", "Donald Glover", "Danny Glover", "Danny Brown"], correctAnswer:0}];
+
+    var Questions= ["Who is Prime Minister of the United Kingdom?","Who has sold out Madison Square Garden more than any other artist?","How many (Championship)rings does Michael Jordan have?","Who is the current President of the United States of America?"];
+    var Choices= ["David Cameron", "Gordon Brown", "Winston Churchill", "Tony Blair","Journey", "Michael Jackson", "Billy Joel", "The Beatles","Four", "Seven", "Two", "Six","Donald Trump", "Donald Glover", "Danny Glover", "Danny Brown"];
+    var Answers= [0,2,3,0];
+    //onload function that displays the first question
+    // function start_onLoad() {
+    //     alert("function start_onLoad() is running");
+    //     // alert("this should a string from an object: " + (allQuestions[0]).question);
+
+    //     // $(".title").css("color","blue");
+    // }
+
+
+    //function for next btton 
+    function next_onClick() {
+        alert("onClick() executed");
+
+
+        //for loop, use questionsList.length
+
+
+
+        //change text in the question element
+
+
+
+        //change text in radio button choices
+
+
+        //wait until the next button is clicked 
+
+    }
+
+    $(document).ready(function() {
+        var cnum= 0;
+        var qnum= 0;
+        var score= 0;
+        var query= Questions[qnum];
+
+        $('.question').text(query);
+        for (var iter=0; iter < Answers.length; iter++) {
+            $('body').append("<div class= 'quiz_q' val= '" + qnum + "'></div>");
+            // alert('');
+        }
+
+        $('.quiz_q').each( function() {
+            $(this).append("<p class= 'question'>" + Questions[qnum]+ "</p>");
+            qnum++;
+            // alert('executed');
+            $(this).append("<form class= 'choices'></form>");
+
+            if (qnum != 1) {$(this).append("<input type='button' name='back_btn' class= 'back_btn' value= 'BACK' />");}
+            $(this).append("<input type='button' name='next_btn' class= 'next_btn' value= 'NEXT' />");
+
+            if (qnum != 1) {
+                $(this).addClass('gone').toggle();
+            } else {
+                
+                $(this).toggle().fadeIn('slow').addClass('here');
+            }
+        });
+
+        $('.choices').each(function() {
+            for (var iter=0; iter < 4; iter++) {
+                $(this).append("<input type='radio' name= 'rad_btn' value= '" + iter +"' ><label>" + Choices[cnum] + "</label><br>");
+                cnum++;
+            }
+        });
+
+        $('label').each(function() {
+            $(this).text(Choices[cnum]);
+            cnum++;
+        });
+
+        // alert("cnum == " + cnum);
+
+
+        $('.next_btn').click(function() {
+            //check if answer is correct
+            if ($('.here').hasClass('answered')) {
+                alert('already answered');
+                var newQ= $('.here').next();
+
+                $('.here').addClass('gone').fadeOut('slow');
+                $('.here').removeClass('here');
+
+                newQ.removeClass('gone');
+                newQ.addClass('here').delay(600).fadeIn('slow');
+            } else {
+
+                if ($('input[name=rad_btn]:checked').val()) {
+
+                    var check = false;
+
+                    var answer= $('input[name=rad_btn]:checked').val();
+                    var ind= $('.here').prevAll('.quiz_q').length;
+
+                    // alert("choice is " + answer + " and qnum is " + indx);
+                    // alert('index is ' + (test.index() + 1 + 1));
+
+                    //index times 4 + answer
+                    if (parseInt(answer) == Answers[ind]) {
+                        // alert("correct");
+                        score++;
+                    }
+
+
+
+
+                    //uncheck button
+                    $('input[name=rad_btn]:checked').removeAttr('checked');
+
+
+                    //add answered class so answer cannot be changed
+                    $('.here').addClass('answered');
+
+                    var newQ= $('.here').next();
+                    
+                    if ($('.here').next('.quiz_q').val() == null) {
+                        $('.here').addClass('gone');
+                        $('.here').removeClass('here').fadeOut('fast');
+                        $('.quiz_over').delay(1000).fadeIn('slow');
+                        $('.quiz_over').append('<p class= "score"></p>');
+                        $('.score').toggle().text(score + ' out of ' + Questions.length + ' questions answered correctly').delay(1000).fadeIn('slow');
+                    } else {
+                        $('.here').addClass('gone').fadeOut('fast');
+                        $('.here').removeClass('here');
+
+
+                        newQ.removeClass('gone');
+                        newQ.addClass('here');
+                        newQ.delay(400).fadeIn('slow');
+                    }
+                }
+            }
+        });
+
+        $('.back_btn').click(function() {
+            var prevQ = $('.here').prev();
+            $('.here').removeClass('here').addClass('gone').fadeOut();
+            // alert('back clicked');
+            prevQ.addClass('here');
+            prevQ.removeClass('gone').delay(400).fadeIn('slow');
+        });
+
+        $()
+    });
+
+    </script>
+        <p class= "title">My Javascript Quiz</p>
+</head>
+
+
+<body>
+
+    <div class= 'quiz_over' hidden= 'true'>
+        <div class= "title">End Of Quiz</div>
+
+        <p>Score: </p> <!--append statement for quiz score-->
+
+    </div>
+</body>
+
+</html>
